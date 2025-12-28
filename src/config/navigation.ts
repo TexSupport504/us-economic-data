@@ -1,23 +1,23 @@
 import {
-  TrendingUp,
-  DollarSign,
+  ChartLineUp,
+  CurrencyDollar,
   Briefcase,
   Percent,
-  Home,
+  House,
   ShoppingCart,
-  Landmark,
-  BarChart3,
-  Ship,
-  Banknote,
-  LineChart,
-  GitCompare,
-  type LucideIcon,
-} from "lucide-react";
+  Bank,
+  ChartBar,
+  Boat,
+  Money,
+  ChartLine,
+  GitDiff,
+  type Icon as PhosphorIcon,
+} from "@phosphor-icons/react";
 
 export interface NavItem {
   title: string;
   href: string;
-  icon: LucideIcon;
+  icon: PhosphorIcon;
   description: string;
   badge?: string;
 }
@@ -31,7 +31,7 @@ export const mainNavItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/",
-    icon: BarChart3,
+    icon: ChartBar,
     description: "Overview of key economic indicators",
   },
 ];
@@ -43,7 +43,7 @@ export const dataCategories: NavCategory[] = [
       {
         title: "GDP",
         href: "/gdp",
-        icon: TrendingUp,
+        icon: ChartLineUp,
         description: "Gross Domestic Product and economic growth",
       },
     ],
@@ -54,7 +54,7 @@ export const dataCategories: NavCategory[] = [
       {
         title: "Inflation",
         href: "/inflation",
-        icon: DollarSign,
+        icon: CurrencyDollar,
         description: "CPI, PCE, and price indices",
         badge: "Key",
       },
@@ -83,13 +83,13 @@ export const dataCategories: NavCategory[] = [
       {
         title: "Monetary Policy",
         href: "/monetary",
-        icon: Landmark,
+        icon: Bank,
         description: "Money supply and Fed balance sheet",
       },
       {
         title: "Markets",
         href: "/markets",
-        icon: LineChart,
+        icon: ChartLine,
         description: "Stocks, VIX volatility, and commodities",
         badge: "New",
       },
@@ -101,7 +101,7 @@ export const dataCategories: NavCategory[] = [
       {
         title: "Housing",
         href: "/housing",
-        icon: Home,
+        icon: House,
         description: "Home prices, starts, and mortgage rates",
       },
       {
@@ -118,13 +118,13 @@ export const dataCategories: NavCategory[] = [
       {
         title: "Trade",
         href: "/trade",
-        icon: Ship,
+        icon: Boat,
         description: "Trade balance, imports, and exports",
       },
       {
         title: "Debt",
         href: "/debt",
-        icon: Banknote,
+        icon: Money,
         description: "Federal debt, deficits, and interest",
       },
     ],
@@ -135,7 +135,7 @@ export const dataCategories: NavCategory[] = [
       {
         title: "Correlation",
         href: "/correlation",
-        icon: GitCompare,
+        icon: GitDiff,
         description: "Compare indicators and analyze relationships",
         badge: "New",
       },

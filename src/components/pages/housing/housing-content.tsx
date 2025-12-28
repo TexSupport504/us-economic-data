@@ -22,6 +22,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
+import { ExportButton } from "@/components/ui/export-button";
 
 const TIME_RANGES = [
   { value: "2", label: "2 Years" },
@@ -51,6 +58,13 @@ export function HousingContent() {
             <MAToggle value={movingAverages} onChange={setMovingAverages} />
           )}
           <ViewToggle value={viewMode} onChange={setViewMode} />
+          <ExportButton
+            data={caseShiller.data}
+            filename={`housing-data-${timeRange}yr`}
+            seriesName="Home Prices"
+          />
+          <PrintButton />
+          <FavoriteButton seriesId="CSUSHPISA" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -66,6 +80,9 @@ export function HousingContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="CSUSHPISA" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -234,6 +251,31 @@ export function HousingContent() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="CSUSHPISA"
+          seriesName="Home Price Index"
+          currentValue={caseShiller.latestValue}
+          change={caseShiller.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="CSUSHPISA" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="CSUSHPISA"
+          currentValue={caseShiller.latestValue}
+          change={caseShiller.yoyChange}
+          compact
+        />
+      </div>
     </PageLayout>
   );
 }

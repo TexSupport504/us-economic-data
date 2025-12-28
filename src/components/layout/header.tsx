@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { BarChart3, Menu, Moon, Sun, X } from "lucide-react";
+import { ChartBar, List, Moon, Sun, X } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
@@ -39,7 +39,7 @@ export function Header() {
             className="flex items-center gap-2"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <BarChart3 className="h-5 w-5 text-primary-foreground" />
+              <ChartBar weight="duotone" className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="hidden sm:block">
               <span className="text-lg font-semibold tracking-tight">
@@ -94,7 +94,7 @@ export function Header() {
                       href={item.href}
                       className="flex items-center gap-2"
                     >
-                      <item.icon className="h-4 w-4" />
+                      <item.icon weight="duotone" className="h-4 w-4" />
                       <div className="flex flex-col">
                         <span className="font-medium">{item.title}</span>
                         <span className="text-xs text-muted-foreground">
@@ -122,8 +122,8 @@ export function Header() {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="h-9 w-9"
             >
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
+              <Sun weight="duotone" className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
+              <Moon weight="duotone" className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
             </Button>
           )}
@@ -136,9 +136,9 @@ export function Header() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
+              <X weight="bold" className="h-5 w-5" />
             ) : (
-              <Menu className="h-5 w-5" />
+              <List weight="bold" className="h-5 w-5" />
             )}
           </Button>
         </div>
@@ -166,7 +166,7 @@ export function Header() {
                       : "text-muted-foreground"
                   )}
                 >
-                  <item.icon className="h-4 w-4" />
+                  <item.icon weight="duotone" className="h-4 w-4" />
                   {item.title}
                 </Link>
               ))}
@@ -189,7 +189,7 @@ export function Header() {
                             : "text-muted-foreground"
                         )}
                       >
-                        <item.icon className="h-4 w-4" />
+                        <item.icon weight="duotone" className="h-4 w-4" />
                         {item.title}
                       </Link>
                     ))}

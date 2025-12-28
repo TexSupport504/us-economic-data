@@ -5,6 +5,13 @@ import { TrendingUp, Info } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
 import { PageLayout } from "@/components/layout/page-layout";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
+import { ExportButton } from "@/components/ui/export-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +57,13 @@ export function GDPContent() {
             <MAToggle value={movingAverages} onChange={setMovingAverages} />
           )}
           <ViewToggle value={viewMode} onChange={setViewMode} />
+          <ExportButton
+            data={gdp.data}
+            filename={`gdp-data-${timeRange}yr`}
+            seriesName="GDP"
+          />
+          <PrintButton />
+          <FavoriteButton seriesId="GDPC1" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -65,6 +79,9 @@ export function GDPContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="GDPC1" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         <StatCard
@@ -236,6 +253,31 @@ export function GDPContent() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="GDPC1"
+          seriesName="Real GDP"
+          currentValue={realGdp.latestValue}
+          change={realGdp.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="GDPC1" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="GDPC1"
+          currentValue={realGdp.latestValue}
+          change={realGdp.yoyChange}
+          compact
+        />
+      </div>
     </PageLayout>
   );
 }

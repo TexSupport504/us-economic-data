@@ -22,6 +22,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
+import { ExportButton } from "@/components/ui/export-button";
 
 const TIME_RANGES = [
   { value: "2", label: "2 Years" },
@@ -51,6 +58,13 @@ export function ConsumerContent() {
             <MAToggle value={movingAverages} onChange={setMovingAverages} />
           )}
           <ViewToggle value={viewMode} onChange={setViewMode} />
+          <ExportButton
+            data={sentiment.data}
+            filename={`consumer-data-${timeRange}yr`}
+            seriesName="Consumer Sentiment"
+          />
+          <PrintButton />
+          <FavoriteButton seriesId="UMCSENT" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -66,6 +80,9 @@ export function ConsumerContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="UMCSENT" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -295,6 +312,31 @@ export function ConsumerContent() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="UMCSENT"
+          seriesName="Consumer Sentiment"
+          currentValue={sentiment.latestValue}
+          change={sentiment.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="UMCSENT" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="UMCSENT"
+          currentValue={sentiment.latestValue}
+          change={sentiment.yoyChange}
+          compact
+        />
+      </div>
     </PageLayout>
   );
 }

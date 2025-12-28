@@ -26,6 +26,10 @@ import { FavoriteButton } from "@/components/ui/favorite-button";
 import { PrintButton } from "@/components/ui/print-button";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 import { formatCurrency } from "@/lib/utils";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
 
 const TIME_RANGES = [
   { value: "10", label: "10 Years" },
@@ -79,6 +83,9 @@ export function DebtContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="GFDEBTN" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -388,6 +395,31 @@ export function DebtContent() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="GFDEBTN"
+          seriesName="Federal Debt"
+          currentValue={totalDebt.latestValue}
+          change={totalDebt.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="GFDEBTN" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="GFDEBTN"
+          currentValue={totalDebt.latestValue}
+          change={totalDebt.yoyChange}
+          compact
+        />
       </div>
     </PageLayout>
   );

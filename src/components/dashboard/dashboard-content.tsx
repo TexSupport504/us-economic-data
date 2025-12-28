@@ -2,15 +2,19 @@
 
 import { motion } from "framer-motion";
 import {
-  TrendingUp,
-  DollarSign,
+  ChartLineUp,
+  CurrencyDollar,
   Briefcase,
   Percent,
-  Home,
+  House,
   ShoppingCart,
   ArrowRight,
-  RefreshCw
-} from "lucide-react";
+  ArrowsClockwise,
+  TrendUp,
+  Bank,
+  Wallet,
+  FileText,
+} from "@phosphor-icons/react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,11 +73,11 @@ function KeyIndicatorCard({
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <Icon className="h-4 w-4 text-primary icon-hover-rotate" />
+                <Icon weight="duotone" className="h-5 w-5 text-primary icon-hover-rotate" />
               </div>
               <CardTitle className="text-sm font-medium">{title}</CardTitle>
             </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+            <ArrowRight weight="bold" className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
           </CardHeader>
           <CardContent>
             <div className="flex items-end justify-between gap-4">
@@ -146,14 +150,14 @@ export function DashboardContent() {
             <div className="mt-6 flex items-center gap-4">
               <Button asChild>
                 <Link href="/inflation">
-                  <DollarSign className="mr-2 h-4 w-4" />
+                  <CurrencyDollar weight="duotone" className="mr-2 h-4 w-4" />
                   View Inflation Data
                 </Link>
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/gdp">
                   Explore GDP
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight weight="bold" className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -176,7 +180,7 @@ export function DashboardContent() {
             </p>
           </div>
           <Button variant="ghost" size="sm" className="gap-2">
-            <RefreshCw className="h-4 w-4" />
+            <ArrowsClockwise weight="duotone" className="h-4 w-4" />
             Refresh
           </Button>
         </motion.div>
@@ -190,7 +194,7 @@ export function DashboardContent() {
           <KeyIndicatorCard
             title="Inflation (CPI)"
             href="/inflation"
-            icon={DollarSign}
+            icon={CurrencyDollar}
             seriesId="CPIAUCSL"
             description="Consumer Price Index for All Urban Consumers"
             changeLabel="YoY"
@@ -199,7 +203,7 @@ export function DashboardContent() {
           <KeyIndicatorCard
             title="Real GDP"
             href="/gdp"
-            icon={TrendingUp}
+            icon={ChartLineUp}
             seriesId="GDPC1"
             prefix="$"
             suffix="T"
@@ -232,7 +236,7 @@ export function DashboardContent() {
           <KeyIndicatorCard
             title="Home Prices"
             href="/housing"
-            icon={Home}
+            icon={House}
             seriesId="CSUSHPISA"
             description="Case-Shiller US National Home Price Index"
             changeLabel="YoY"

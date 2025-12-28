@@ -24,6 +24,12 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
 
 const TIME_RANGES = [
   { value: "2", label: "2 Years" },
@@ -102,6 +108,8 @@ export function EmploymentContent() {
             filename={`employment-data-${timeRange}yr`}
             seriesName="Total Nonfarm Payrolls"
           />
+          <PrintButton />
+          <FavoriteButton seriesId="UNRATE" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -117,6 +125,9 @@ export function EmploymentContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="UNRATE" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -461,6 +472,31 @@ export function EmploymentContent() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="UNRATE"
+          seriesName="Unemployment Rate"
+          currentValue={unrate.latestValue}
+          change={unrate.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="UNRATE" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="UNRATE"
+          currentValue={unrate.latestValue}
+          change={unrate.yoyChange}
+          compact
+        />
+      </div>
     </PageLayout>
   );
 }

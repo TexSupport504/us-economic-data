@@ -22,6 +22,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
+import { ExportButton } from "@/components/ui/export-button";
 
 const TIME_RANGES = [
   { value: "2", label: "2 Years" },
@@ -49,6 +56,13 @@ export function MonetaryContent() {
             <MAToggle value={movingAverages} onChange={setMovingAverages} />
           )}
           <ViewToggle value={viewMode} onChange={setViewMode} />
+          <ExportButton
+            data={m2.data}
+            filename={`monetary-data-${timeRange}yr`}
+            seriesName="M2 Money Supply"
+          />
+          <PrintButton />
+          <FavoriteButton seriesId="M2SL" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -64,6 +78,9 @@ export function MonetaryContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="M2SL" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2">
         <StatCard
@@ -227,6 +244,31 @@ export function MonetaryContent() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="M2SL"
+          seriesName="M2 Money Supply"
+          currentValue={m2.latestValue}
+          change={m2.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="M2SL" />
+      </div>
+
+      {/* Deep Dive Educational Panel */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="M2SL"
+          currentValue={m2.latestValue}
+          change={m2.yoyChange}
+          compact
+        />
       </div>
     </PageLayout>
   );

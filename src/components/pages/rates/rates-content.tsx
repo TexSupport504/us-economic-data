@@ -22,6 +22,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { ContextBanner } from "@/components/ui/context-banner";
+import { AIInsight } from "@/components/ui/ai-insight";
+import { EducationalPanel } from "@/components/ui/educational-panel";
+import { IndicatorRelationships } from "@/components/ui/indicator-relationships";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
+import { ExportButton } from "@/components/ui/export-button";
 
 const TIME_RANGES = [
   { value: "1", label: "1 Year" },
@@ -51,6 +58,13 @@ export function RatesContent() {
             <MAToggle value={movingAverages} onChange={setMovingAverages} />
           )}
           <ViewToggle value={viewMode} onChange={setViewMode} />
+          <ExportButton
+            data={fedfunds.data}
+            filename={`interest-rates-${timeRange}yr`}
+            seriesName="Federal Funds Rate"
+          />
+          <PrintButton />
+          <FavoriteButton seriesId="FEDFUNDS" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -66,6 +80,9 @@ export function RatesContent() {
         </div>
       }
     >
+      {/* Educational Context Banner */}
+      <ContextBanner seriesId="FEDFUNDS" className="mb-6" />
+
       {/* Key Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -279,6 +296,31 @@ export function RatesContent() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Museum-Style Educational Section */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* AI Insight */}
+        <AIInsight
+          seriesId="FEDFUNDS"
+          seriesName="Federal Funds Rate"
+          currentValue={fedfunds.latestValue}
+          change={fedfunds.yoyChange}
+          className="lg:col-span-2"
+        />
+
+        {/* Related Indicators */}
+        <IndicatorRelationships seriesId="FEDFUNDS" />
+      </div>
+
+      {/* Deep Dive Educational Panel - 10Y Treasury */}
+      <div className="mt-6">
+        <EducationalPanel
+          seriesId="DGS10"
+          currentValue={dgs10.latestValue}
+          change={dgs10.yoyChange}
+          compact
+        />
+      </div>
     </PageLayout>
   );
 }
