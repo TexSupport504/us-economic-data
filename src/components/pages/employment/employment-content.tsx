@@ -19,6 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ExportButton } from "@/components/ui/export-button";
 import { DateRangeComparison } from "@/components/ui/date-range-comparison";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -208,9 +209,7 @@ export function EmploymentContent() {
             </CardHeader>
             <CardContent>
               {unrate.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={unrate.data}
@@ -240,9 +239,7 @@ export function EmploymentContent() {
             </CardHeader>
             <CardContent>
               {payems.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={payems.data}
@@ -285,9 +282,7 @@ export function EmploymentContent() {
             </CardHeader>
             <CardContent>
               {sectorsLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={topSectors.map((s) => ({
@@ -331,9 +326,7 @@ export function EmploymentContent() {
               </CardHeader>
               <CardContent>
                 {manufacturing.isLoading ? (
-                  <div className="flex h-[200px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={200} showAxis={false} />
                 ) : (
                   <AreaChart
                     data={manufacturing.data}
@@ -360,9 +353,7 @@ export function EmploymentContent() {
               </CardHeader>
               <CardContent>
                 {leisure.isLoading ? (
-                  <div className="flex h-[200px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={200} showAxis={false} />
                 ) : (
                   <AreaChart
                     data={leisure.data}
@@ -395,9 +386,7 @@ export function EmploymentContent() {
             </CardHeader>
             <CardContent>
               {civpart.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={civpart.data}
@@ -424,9 +413,7 @@ export function EmploymentContent() {
             </CardHeader>
             <CardContent>
               {icsa.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={icsa.data}

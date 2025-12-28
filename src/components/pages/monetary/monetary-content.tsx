@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, StatCard } from "@/components/charts";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -117,9 +118,7 @@ export function MonetaryContent() {
             </CardHeader>
             <CardContent>
               {m2.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={m2.data}
@@ -162,9 +161,7 @@ export function MonetaryContent() {
             </CardHeader>
             <CardContent>
               {fedBalance.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={fedBalance.data}

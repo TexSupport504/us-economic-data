@@ -11,10 +11,12 @@ import {
   ResponsiveContainer,
   Legend,
   ReferenceLine,
+  ReferenceArea,
 } from "recharts";
 import { format, parseISO } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { getVisibleRecessions, clampRecession } from "@/lib/utils/recessions";
 
 interface DataSeries {
   id: string;
@@ -34,6 +36,7 @@ interface LineChartProps {
   formatValue?: (value: number) => string;
   formatDate?: (date: string) => string;
   referenceLines?: { value: number; label?: string; color?: string }[];
+  showRecessions?: boolean;
   className?: string;
 }
 
@@ -56,6 +59,7 @@ export function LineChart({
   formatValue = (v) => v.toFixed(2),
   formatDate = (d) => format(parseISO(d), "MMM yyyy"),
   referenceLines = [],
+  showRecessions = true,
   className,
 }: LineChartProps) {
   // Merge all series data by date
@@ -86,6 +90,49 @@ export function LineChart({
     const padding = (max - min) * 0.1;
     return [Math.floor(min - padding), Math.ceil(max + padding)];
   }, [series]);
+
+  // Get all unique dates from series data for recession calculation
+  const allDates = useMemo(() => {
+    const dateSet = new Set<string>();
+    series.forEach((s) => s.data.forEach((d) => dateSet.add(d.date)));
+    return Array.from(dateSet).sort();
+  }, [series]);
+
+  // Get recession periods that fall within the data range
+  const recessionAreas = useMemo(() => {
+    if (!showRecessions || allDates.length === 0) return [];
+
+    const startDate = allDates[0];
+    const endDate = allDates[allDates.length - 1];
+    const visibleRecessions = getVisibleRecessions(startDate, endDate);
+
+    return visibleRecessions.map((recession) => {
+      const clamped = clampRecession(recession, startDate, endDate);
+
+      // Find the first data point after recession start
+      let startIndex = 0;
+      for (let i = 0; i < allDates.length; i++) {
+        if (allDates[i] >= clamped.start) {
+          startIndex = i;
+          break;
+        }
+      }
+
+      // Find the last data point before recession end
+      let endIndex = allDates.length - 1;
+      for (let i = allDates.length - 1; i >= 0; i--) {
+        if (allDates[i] <= clamped.end) {
+          endIndex = i;
+          break;
+        }
+      }
+
+      return {
+        x1: formatDate(allDates[startIndex]),
+        x2: formatDate(allDates[endIndex]),
+      };
+    });
+  }, [allDates, showRecessions, formatDate]);
 
   if (series.length === 0 || chartData.length === 0) {
     return (
@@ -185,6 +232,18 @@ export function LineChart({
               )}
             />
           )}
+
+          {/* Recession shading */}
+          {recessionAreas.map((area, i) => (
+            <ReferenceArea
+              key={`recession-${i}`}
+              x1={area.x1}
+              x2={area.x2}
+              fill="var(--muted-foreground)"
+              fillOpacity={0.1}
+              stroke="none"
+            />
+          ))}
 
           {referenceLines.map((line, i) => (
             <ReferenceLine

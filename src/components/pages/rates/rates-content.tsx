@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -143,9 +144,7 @@ export function RatesContent() {
             </CardHeader>
             <CardContent>
               {fedfunds.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={fedfunds.data}
@@ -167,9 +166,7 @@ export function RatesContent() {
             </CardHeader>
             <CardContent>
               {dgs10.isLoading || dgs2.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={[
@@ -216,9 +213,7 @@ export function RatesContent() {
             </CardHeader>
             <CardContent>
               {t10y2y.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={t10y2y.data}
@@ -243,9 +238,7 @@ export function RatesContent() {
             </CardHeader>
             <CardContent>
               {fedfunds.isLoading || dgs10.isLoading || dgs2.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={[

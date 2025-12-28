@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -141,9 +142,7 @@ export function HousingContent() {
             </CardHeader>
             <CardContent>
               {caseShiller.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={caseShiller.data}
@@ -168,9 +167,7 @@ export function HousingContent() {
             </CardHeader>
             <CardContent>
               {housingStarts.isLoading || permits.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={[
@@ -199,9 +196,7 @@ export function HousingContent() {
             </CardHeader>
             <CardContent>
               {mortgage.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={mortgage.data}

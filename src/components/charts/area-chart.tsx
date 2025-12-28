@@ -10,10 +10,12 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  ReferenceArea,
 } from "recharts";
 import { format, parseISO } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { getVisibleRecessions, clampRecession } from "@/lib/utils/recessions";
 
 interface DataPoint {
   date: string;
@@ -32,6 +34,7 @@ interface AreaChartProps {
   formatValue?: (value: number) => string;
   formatDate?: (date: string) => string;
   referenceLines?: { value: number; label?: string; color?: string }[];
+  showRecessions?: boolean;
   className?: string;
 }
 
@@ -47,6 +50,7 @@ export function AreaChart({
   formatValue = (v) => v.toFixed(2),
   formatDate = (d) => format(parseISO(d), "MMM yyyy"),
   referenceLines = [],
+  showRecessions = true,
   className,
 }: AreaChartProps) {
   const chartData = useMemo(() => {
@@ -64,6 +68,42 @@ export function AreaChart({
     const padding = (max - min) * 0.1;
     return [Math.floor(min - padding), Math.ceil(max + padding)];
   }, [data]);
+
+  // Get recession periods that fall within the data range
+  const recessionAreas = useMemo(() => {
+    if (!showRecessions || data.length === 0) return [];
+
+    const startDate = data[0].date;
+    const endDate = data[data.length - 1].date;
+    const visibleRecessions = getVisibleRecessions(startDate, endDate);
+
+    return visibleRecessions.map((recession) => {
+      const clamped = clampRecession(recession, startDate, endDate);
+
+      // Find the index of the first data point after recession start
+      let startIndex = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].date >= clamped.start) {
+          startIndex = i;
+          break;
+        }
+      }
+
+      // Find the index of the last data point before recession end
+      let endIndex = data.length - 1;
+      for (let i = data.length - 1; i >= 0; i--) {
+        if (data[i].date <= clamped.end) {
+          endIndex = i;
+          break;
+        }
+      }
+
+      return {
+        x1: formatDate(data[startIndex].date),
+        x2: formatDate(data[endIndex].date),
+      };
+    });
+  }, [data, showRecessions, formatDate]);
 
   if (data.length === 0) {
     return (
@@ -147,6 +187,18 @@ export function AreaChart({
               }}
             />
           )}
+
+          {/* Recession shading */}
+          {recessionAreas.map((area, i) => (
+            <ReferenceArea
+              key={`recession-${i}`}
+              x1={area.x1}
+              x2={area.x2}
+              fill="var(--muted-foreground)"
+              fillOpacity={0.1}
+              stroke="none"
+            />
+          ))}
 
           {referenceLines.map((line, i) => (
             <ReferenceLine

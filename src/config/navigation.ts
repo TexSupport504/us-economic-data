@@ -7,6 +7,8 @@ import {
   ShoppingCart,
   Landmark,
   BarChart3,
+  Ship,
+  Banknote,
   type LucideIcon,
 } from "lucide-react";
 
@@ -98,6 +100,24 @@ export const dataCategories: NavCategory[] = [
         href: "/consumer",
         icon: ShoppingCart,
         description: "Spending, sentiment, and savings",
+      },
+    ],
+  },
+  {
+    title: "Fiscal",
+    items: [
+      {
+        title: "Trade",
+        href: "/trade",
+        icon: Ship,
+        description: "Trade balance, imports, and exports",
+      },
+      {
+        title: "Debt",
+        href: "/debt",
+        icon: Banknote,
+        description: "Federal debt, deficits, and interest",
+        badge: "New",
       },
     ],
   },

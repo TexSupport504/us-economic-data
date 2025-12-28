@@ -106,6 +106,22 @@ export const FRED_SERIES = {
   // Money Supply
   M2SL: { id: "M2SL", name: "M2 Money Supply", category: "monetary" },
   WALCL: { id: "WALCL", name: "Fed Balance Sheet", category: "monetary" },
+
+  // Trade
+  BOPGSTB: { id: "BOPGSTB", name: "Trade Balance", category: "trade" },
+  EXPGS: { id: "EXPGS", name: "Exports of Goods & Services", category: "trade" },
+  IMPGS: { id: "IMPGS", name: "Imports of Goods & Services", category: "trade" },
+  NETEXP: { id: "NETEXP", name: "Net Exports", category: "trade" },
+  BOPTIMP: { id: "BOPTIMP", name: "Total Imports", category: "trade" },
+  BOPTEXP: { id: "BOPTEXP", name: "Total Exports", category: "trade" },
+
+  // Debt & Deficits
+  GFDEBTN: { id: "GFDEBTN", name: "Federal Debt: Total Public", category: "debt" },
+  FYGFD: { id: "FYGFD", name: "Federal Debt Held by Public", category: "debt" },
+  GFDEGDQ188S: { id: "GFDEGDQ188S", name: "Debt to GDP Ratio", category: "debt" },
+  FYFSD: { id: "FYFSD", name: "Federal Surplus/Deficit", category: "debt" },
+  MTSDS133FMS: { id: "MTSDS133FMS", name: "Federal Deficit (Monthly)", category: "debt" },
+  FDHBPIN: { id: "FDHBPIN", name: "Federal Debt Interest Payments", category: "debt" },
 } as const;
 
 export type FredSeriesId = keyof typeof FRED_SERIES;

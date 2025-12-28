@@ -19,6 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ExportButton } from "@/components/ui/export-button";
 import { DateRangeComparison } from "@/components/ui/date-range-comparison";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -184,9 +185,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {cpi.isLoading ? (
-                  <div className="flex h-[300px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={300} />
                 ) : (
                   <AreaChart
                     data={cpi.data}
@@ -230,9 +229,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {coreCpi.isLoading ? (
-                  <div className="flex h-[300px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={300} />
                 ) : (
                   <AreaChart
                     data={coreCpi.data}
@@ -275,9 +272,7 @@ export function InflationContent() {
             </CardHeader>
             <CardContent>
               {componentsLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={componentData.map((c) => ({
@@ -305,9 +300,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {cpiShelter.isLoading ? (
-                  <div className="flex h-[200px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={200} showAxis={false} />
                 ) : (
                   <AreaChart
                     data={cpiShelter.data}
@@ -334,9 +327,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {cpiEnergy.isLoading ? (
-                  <div className="flex h-[200px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={200} showAxis={false} />
                 ) : (
                   <AreaChart
                     data={cpiEnergy.data}
@@ -387,9 +378,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {pce.isLoading ? (
-                  <div className="flex h-[300px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={300} />
                 ) : (
                   <AreaChart
                     data={pce.data}
@@ -432,9 +421,7 @@ export function InflationContent() {
               </CardHeader>
               <CardContent>
                 {corePce.isLoading ? (
-                  <div className="flex h-[300px] items-center justify-center">
-                    <span className="text-muted-foreground">Loading...</span>
-                  </div>
+                  <ChartSkeleton height={300} />
                 ) : (
                   <AreaChart
                     data={corePce.data}
@@ -476,9 +463,7 @@ export function InflationContent() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} type="line" />
               ) : (
                 <LineChart
                   series={[

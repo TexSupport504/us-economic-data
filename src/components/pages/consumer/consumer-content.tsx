@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, StatCard } from "@/components/charts";
+import { ChartSkeleton } from "@/components/ui/chart-skeleton";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -144,9 +145,7 @@ export function ConsumerContent() {
             </CardHeader>
             <CardContent>
               {sentiment.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={sentiment.data}
@@ -176,9 +175,7 @@ export function ConsumerContent() {
             </CardHeader>
             <CardContent>
               {pce.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={pce.data}
@@ -221,9 +218,7 @@ export function ConsumerContent() {
             </CardHeader>
             <CardContent>
               {savingsRate.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={savingsRate.data}
@@ -250,9 +245,7 @@ export function ConsumerContent() {
             </CardHeader>
             <CardContent>
               {consumerCredit.isLoading ? (
-                <div className="flex h-[400px] items-center justify-center">
-                  <span className="text-muted-foreground">Loading...</span>
-                </div>
+                <ChartSkeleton height={400} />
               ) : (
                 <AreaChart
                   data={consumerCredit.data}
