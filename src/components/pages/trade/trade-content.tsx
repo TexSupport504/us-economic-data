@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { ExportButton } from "@/components/ui/export-button";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
@@ -30,6 +33,8 @@ const TIME_RANGES = [
 
 export function TradeContent() {
   const [timeRange, setTimeRange] = useState("10");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const tradeBalance = useFredData("BOPGSTB", { years: parseInt(timeRange) });
   const exports = useFredData("BOPTEXP", { years: parseInt(timeRange) });
@@ -45,6 +50,10 @@ export function TradeContent() {
       icon={Ship}
       actions={
         <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
           <ExportButton
             data={tradeBalance.data}
             filename={`trade-balance-${timeRange}yr`}
@@ -159,7 +168,7 @@ export function TradeContent() {
             <CardContent>
               {tradeBalance.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={tradeBalance.data}
                   height={400}
@@ -169,6 +178,13 @@ export function TradeContent() {
                   referenceLines={[
                     { value: 0, label: "Balance", color: "var(--muted-foreground)" },
                   ]}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={tradeBalance.data}
+                  title="Trade Balance"
+                  formatValue={(v) => `$${v.toFixed(0)}B`}
                 />
               )}
             </CardContent>
@@ -190,12 +206,18 @@ export function TradeContent() {
               <CardContent>
                 {exports.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={exports.data}
                     height={300}
                     color="var(--positive)"
                     gradientId="exportsGradient"
+                    formatValue={(v) => `$${v.toFixed(0)}B`}
+                  />
+                ) : (
+                  <DataTable
+                    data={exports.data}
+                    title="Exports"
                     formatValue={(v) => `$${v.toFixed(0)}B`}
                   />
                 )}
@@ -215,12 +237,18 @@ export function TradeContent() {
               <CardContent>
                 {imports.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={imports.data}
                     height={300}
                     color="var(--negative)"
                     gradientId="importsGradient"
+                    formatValue={(v) => `$${v.toFixed(0)}B`}
+                  />
+                ) : (
+                  <DataTable
+                    data={imports.data}
+                    title="Imports"
                     formatValue={(v) => `$${v.toFixed(0)}B`}
                   />
                 )}

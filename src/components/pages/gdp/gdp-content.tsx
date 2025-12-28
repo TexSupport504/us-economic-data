@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -29,6 +32,8 @@ const TIME_RANGES = [
 
 export function GDPContent() {
   const [timeRange, setTimeRange] = useState("10");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const gdp = useFredData("GDP", { years: parseInt(timeRange) });
   const realGdp = useFredData("GDPC1", { years: parseInt(timeRange) });
@@ -40,18 +45,24 @@ export function GDPContent() {
       description="Gross Domestic Product and economic output metrics"
       icon={TrendingUp}
       actions={
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TIME_RANGES.map((range) => (
-              <SelectItem key={range.value} value={range.value}>
-                {range.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TIME_RANGES.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       }
     >
       {/* Key Stats */}
@@ -133,13 +144,20 @@ export function GDPContent() {
             <CardContent>
               {realGdp.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={realGdp.data}
                   height={400}
                   color="var(--chart-1)"
                   gradientId="realGdpGradient"
                   formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={realGdp.data}
+                  title="Real GDP"
+                  formatValue={(v) => `$${(v / 1000).toFixed(2)}T`}
                 />
               )}
             </CardContent>
@@ -160,13 +178,20 @@ export function GDPContent() {
             <CardContent>
               {gdp.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={gdp.data}
                   height={400}
                   color="var(--chart-2)"
                   gradientId="nominalGdpGradient"
                   formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={gdp.data}
+                  title="Nominal GDP"
+                  formatValue={(v) => `$${(v / 1000).toFixed(2)}T`}
                 />
               )}
             </CardContent>
@@ -187,7 +212,7 @@ export function GDPContent() {
             <CardContent>
               {gdpGrowth.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={gdpGrowth.data}
                   height={400}
@@ -198,6 +223,13 @@ export function GDPContent() {
                     { value: 0, label: "0%", color: "var(--muted-foreground)" },
                     { value: 2, label: "2% Trend", color: "var(--warning)" },
                   ]}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={gdpGrowth.data}
+                  title="Growth Rate"
+                  formatValue={(v) => `${v.toFixed(2)}%`}
                 />
               )}
             </CardContent>

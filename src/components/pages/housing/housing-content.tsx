@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -29,6 +32,8 @@ const TIME_RANGES = [
 
 export function HousingContent() {
   const [timeRange, setTimeRange] = useState("10");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const caseShiller = useFredData("CSUSHPISA", { years: parseInt(timeRange) });
   const housingStarts = useFredData("HOUST", { years: parseInt(timeRange) });
@@ -41,18 +46,24 @@ export function HousingContent() {
       description="Home prices, housing starts, and mortgage rates"
       icon={Home}
       actions={
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TIME_RANGES.map((range) => (
-              <SelectItem key={range.value} value={range.value}>
-                {range.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TIME_RANGES.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       }
     >
       {/* Key Stats */}
@@ -143,7 +154,7 @@ export function HousingContent() {
             <CardContent>
               {caseShiller.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={caseShiller.data}
                   height={400}
@@ -153,6 +164,13 @@ export function HousingContent() {
                   referenceLines={[
                     { value: 100, label: "Jan 2000 = 100", color: "var(--muted-foreground)" },
                   ]}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={caseShiller.data}
+                  title="Home Price Index"
+                  formatValue={(v) => v.toFixed(1)}
                 />
               )}
             </CardContent>
@@ -197,12 +215,18 @@ export function HousingContent() {
             <CardContent>
               {mortgage.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={mortgage.data}
                   height={400}
                   color="var(--chart-3)"
                   gradientId="mortgageGradient"
+                  formatValue={(v) => `${v.toFixed(2)}%`}
+                />
+              ) : (
+                <DataTable
+                  data={mortgage.data}
+                  title="30-Year Mortgage Rate"
                   formatValue={(v) => `${v.toFixed(2)}%`}
                 />
               )}

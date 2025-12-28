@@ -20,6 +20,9 @@ import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ExportButton } from "@/components/ui/export-button";
 import { DateRangeComparison } from "@/components/ui/date-range-comparison";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -41,6 +44,8 @@ const CPI_COMPONENTS = [
 
 export function InflationContent() {
   const [timeRange, setTimeRange] = useState("5");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   // Fetch data for different inflation metrics
   const cpi = useFredData("CPIAUCSL", { years: parseInt(timeRange) });
@@ -75,6 +80,10 @@ export function InflationContent() {
       icon={DollarSign}
       actions={
         <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
           <ExportButton
             data={cpi.data}
             filename={`cpi-data-${timeRange}yr`}
@@ -186,13 +195,20 @@ export function InflationContent() {
               <CardContent>
                 {cpi.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={cpi.data}
                     height={300}
                     color="var(--chart-1)"
                     gradientId="cpiGradient"
                     formatValue={(v) => v.toFixed(1)}
+                    movingAverages={movingAverages}
+                  />
+                ) : (
+                  <DataTable
+                    data={cpi.data}
+                    title="CPI"
+                    formatValue={(v) => v.toFixed(2)}
                   />
                 )}
               </CardContent>
@@ -230,13 +246,20 @@ export function InflationContent() {
               <CardContent>
                 {coreCpi.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={coreCpi.data}
                     height={300}
                     color="var(--chart-2)"
                     gradientId="coreCpiGradient"
                     formatValue={(v) => v.toFixed(1)}
+                    movingAverages={movingAverages}
+                  />
+                ) : (
+                  <DataTable
+                    data={coreCpi.data}
+                    title="Core CPI"
+                    formatValue={(v) => v.toFixed(2)}
                   />
                 )}
               </CardContent>
@@ -379,13 +402,19 @@ export function InflationContent() {
               <CardContent>
                 {pce.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={pce.data}
                     height={300}
                     color="var(--chart-3)"
                     gradientId="pceGradient"
                     formatValue={(v) => v.toFixed(1)}
+                  />
+                ) : (
+                  <DataTable
+                    data={pce.data}
+                    title="PCE"
+                    formatValue={(v) => v.toFixed(2)}
                   />
                 )}
               </CardContent>
@@ -422,7 +451,7 @@ export function InflationContent() {
               <CardContent>
                 {corePce.isLoading ? (
                   <ChartSkeleton height={300} />
-                ) : (
+                ) : viewMode === "chart" ? (
                   <AreaChart
                     data={corePce.data}
                     height={300}
@@ -430,6 +459,12 @@ export function InflationContent() {
                     gradientId="corePceGradient"
                     formatValue={(v) => v.toFixed(1)}
                     referenceLines={[{ value: 2, label: "2% Target", color: "var(--warning)" }]}
+                  />
+                ) : (
+                  <DataTable
+                    data={corePce.data}
+                    title="Core PCE"
+                    formatValue={(v) => v.toFixed(2)}
                   />
                 )}
               </CardContent>

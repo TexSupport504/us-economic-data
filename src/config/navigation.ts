@@ -9,6 +9,7 @@ import {
   BarChart3,
   Ship,
   Banknote,
+  LineChart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -84,6 +85,13 @@ export const dataCategories: NavCategory[] = [
         icon: Landmark,
         description: "Money supply and Fed balance sheet",
       },
+      {
+        title: "Markets",
+        href: "/markets",
+        icon: LineChart,
+        description: "Stocks, VIX volatility, and commodities",
+        badge: "New",
+      },
     ],
   },
   {
@@ -117,7 +125,6 @@ export const dataCategories: NavCategory[] = [
         href: "/debt",
         icon: Banknote,
         description: "Federal debt, deficits, and interest",
-        badge: "New",
       },
     ],
   },

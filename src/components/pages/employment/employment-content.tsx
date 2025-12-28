@@ -20,6 +20,9 @@ import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ExportButton } from "@/components/ui/export-button";
 import { DateRangeComparison } from "@/components/ui/date-range-comparison";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -44,6 +47,8 @@ const EMPLOYMENT_SECTORS = [
 
 export function EmploymentContent() {
   const [timeRange, setTimeRange] = useState("5");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   // Headline data
   const unrate = useFredData("UNRATE", { years: parseInt(timeRange) });
@@ -88,6 +93,10 @@ export function EmploymentContent() {
       icon={Briefcase}
       actions={
         <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
           <ExportButton
             data={payems.data}
             filename={`employment-data-${timeRange}yr`}
@@ -210,7 +219,7 @@ export function EmploymentContent() {
             <CardContent>
               {unrate.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={unrate.data}
                   height={400}
@@ -220,6 +229,13 @@ export function EmploymentContent() {
                   referenceLines={[
                     { value: 4, label: "Natural Rate ~4%", color: "var(--warning)" },
                   ]}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={unrate.data}
+                  title="Unemployment Rate"
+                  formatValue={(v) => `${v.toFixed(1)}%`}
                 />
               )}
             </CardContent>
@@ -240,12 +256,18 @@ export function EmploymentContent() {
             <CardContent>
               {payems.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={payems.data}
                   height={400}
                   color="var(--chart-2)"
                   gradientId="payemsGradient"
+                  formatValue={(v) => `${(v / 1000).toFixed(1)}M`}
+                />
+              ) : (
+                <DataTable
+                  data={payems.data}
+                  title="Nonfarm Payrolls"
                   formatValue={(v) => `${(v / 1000).toFixed(1)}M`}
                 />
               )}
@@ -387,12 +409,18 @@ export function EmploymentContent() {
             <CardContent>
               {civpart.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={civpart.data}
                   height={400}
                   color="var(--chart-3)"
                   gradientId="civpartGradient"
+                  formatValue={(v) => `${v.toFixed(1)}%`}
+                />
+              ) : (
+                <DataTable
+                  data={civpart.data}
+                  title="Labor Force Participation"
                   formatValue={(v) => `${v.toFixed(1)}%`}
                 />
               )}
@@ -414,12 +442,18 @@ export function EmploymentContent() {
             <CardContent>
               {icsa.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={icsa.data}
                   height={400}
                   color="var(--chart-4)"
                   gradientId="icsaGradient"
+                  formatValue={(v) => `${(v / 1000).toFixed(0)}K`}
+                />
+              ) : (
+                <DataTable
+                  data={icsa.data}
+                  title="Initial Jobless Claims"
                   formatValue={(v) => `${(v / 1000).toFixed(0)}K`}
                 />
               )}

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import {
   AreaChart as RechartsAreaChart,
   Area,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -11,6 +12,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   ReferenceArea,
+  Legend,
 } from "recharts";
 import { format, parseISO } from "date-fns";
 import { motion } from "framer-motion";
@@ -21,6 +23,8 @@ interface DataPoint {
   date: string;
   value: number;
 }
+
+type MovingAveragePeriod = 3 | 6 | 12;
 
 interface AreaChartProps {
   data: DataPoint[];
@@ -35,8 +39,15 @@ interface AreaChartProps {
   formatDate?: (date: string) => string;
   referenceLines?: { value: number; label?: string; color?: string }[];
   showRecessions?: boolean;
+  movingAverages?: MovingAveragePeriod[];
   className?: string;
 }
+
+const MA_COLORS: Record<MovingAveragePeriod, string> = {
+  3: "var(--chart-2)",
+  6: "var(--chart-3)",
+  12: "var(--chart-4)",
+};
 
 export function AreaChart({
   data,
@@ -51,14 +62,30 @@ export function AreaChart({
   formatDate = (d) => format(parseISO(d), "MMM yyyy"),
   referenceLines = [],
   showRecessions = true,
+  movingAverages = [],
   className,
 }: AreaChartProps) {
+  // Calculate moving averages
+  const calculateMA = (values: number[], period: number, index: number): number | null => {
+    if (index < period - 1) return null;
+    const slice = values.slice(index - period + 1, index + 1);
+    return slice.reduce((sum, val) => sum + val, 0) / period;
+  };
+
   const chartData = useMemo(() => {
-    return data.map((d) => ({
-      ...d,
-      formattedDate: formatDate(d.date),
-    }));
-  }, [data, formatDate]);
+    const values = data.map((d) => d.value);
+    return data.map((d, i) => {
+      const point: Record<string, unknown> = {
+        ...d,
+        formattedDate: formatDate(d.date),
+      };
+      // Add moving averages if requested
+      for (const period of movingAverages) {
+        point[`ma${period}`] = calculateMA(values, period, i);
+      }
+      return point;
+    });
+  }, [data, formatDate, movingAverages]);
 
   const yDomain = useMemo(() => {
     if (data.length === 0) return [0, 100];
@@ -173,15 +200,28 @@ export function AreaChart({
             <Tooltip
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
-                const data = payload[0].payload;
+                const pointData = payload[0].payload;
                 return (
                   <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-lg">
                     <p className="text-xs text-muted-foreground">
-                      {format(parseISO(data.date), "MMMM d, yyyy")}
+                      {format(parseISO(pointData.date), "MMMM d, yyyy")}
                     </p>
                     <p className="text-lg font-semibold tabular-nums">
-                      {formatValue(data.value)}
+                      {formatValue(pointData.value)}
                     </p>
+                    {movingAverages.length > 0 && (
+                      <div className="mt-1 space-y-0.5 border-t border-border pt-1">
+                        {movingAverages.map((period) => {
+                          const maValue = pointData[`ma${period}`];
+                          if (maValue == null) return null;
+                          return (
+                            <p key={period} className="text-xs" style={{ color: MA_COLORS[period] }}>
+                              {period}M MA: {formatValue(maValue)}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               }}
@@ -225,7 +265,33 @@ export function AreaChart({
             strokeWidth={2}
             fill={`url(#${gradientId})`}
             animationDuration={animated ? 1000 : 0}
+            name="Value"
           />
+
+          {/* Moving average lines */}
+          {movingAverages.map((period) => (
+            <Line
+              key={`ma-${period}`}
+              type="monotone"
+              dataKey={`ma${period}`}
+              stroke={MA_COLORS[period]}
+              strokeWidth={1.5}
+              strokeDasharray="4 2"
+              dot={false}
+              animationDuration={animated ? 1000 : 0}
+              connectNulls
+              name={`${period}M MA`}
+            />
+          ))}
+
+          {movingAverages.length > 0 && (
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{ paddingBottom: 10 }}
+              formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
+            />
+          )}
         </RechartsAreaChart>
       </ResponsiveContainer>
     </motion.div>

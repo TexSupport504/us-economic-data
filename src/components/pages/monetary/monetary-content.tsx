@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -29,6 +32,8 @@ const TIME_RANGES = [
 
 export function MonetaryContent() {
   const [timeRange, setTimeRange] = useState("10");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const m2 = useFredData("M2SL", { years: parseInt(timeRange) });
   const fedBalance = useFredData("WALCL", { years: parseInt(timeRange) });
@@ -39,18 +44,24 @@ export function MonetaryContent() {
       description="Money supply and Federal Reserve balance sheet"
       icon={Landmark}
       actions={
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TIME_RANGES.map((range) => (
-              <SelectItem key={range.value} value={range.value}>
-                {range.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TIME_RANGES.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       }
     >
       {/* Key Stats */}
@@ -119,12 +130,19 @@ export function MonetaryContent() {
             <CardContent>
               {m2.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={m2.data}
                   height={400}
                   color="var(--chart-1)"
                   gradientId="m2Gradient"
+                  formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={m2.data}
+                  title="M2 Money Supply"
                   formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
                 />
               )}
@@ -162,12 +180,18 @@ export function MonetaryContent() {
             <CardContent>
               {fedBalance.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={fedBalance.data}
                   height={400}
                   color="var(--chart-2)"
                   gradientId="fedBalanceGradient"
+                  formatValue={(v) => `$${(v / 1000000).toFixed(2)}T`}
+                />
+              ) : (
+                <DataTable
+                  data={fedBalance.data}
+                  title="Fed Balance Sheet"
                   formatValue={(v) => `$${(v / 1000000).toFixed(2)}T`}
                 />
               )}

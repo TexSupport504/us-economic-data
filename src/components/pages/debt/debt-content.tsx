@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, LineChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { ExportButton } from "@/components/ui/export-button";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
@@ -30,6 +33,8 @@ const TIME_RANGES = [
 
 export function DebtContent() {
   const [timeRange, setTimeRange] = useState("20");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const totalDebt = useFredData("GFDEBTN", { years: parseInt(timeRange) });
   const debtToGdp = useFredData("GFDEGDQ188S", { years: parseInt(timeRange) });
@@ -45,6 +50,10 @@ export function DebtContent() {
       icon={Banknote}
       actions={
         <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
           <ExportButton
             data={totalDebt.data}
             filename={`federal-debt-${timeRange}yr`}
@@ -160,12 +169,19 @@ export function DebtContent() {
             <CardContent>
               {totalDebt.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={totalDebt.data}
                   height={400}
                   color="var(--chart-1)"
                   gradientId="totalDebtGradient"
+                  formatValue={(v) => `$${(v / 1000000).toFixed(1)}T`}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={totalDebt.data}
+                  title="Federal Debt"
                   formatValue={(v) => `$${(v / 1000000).toFixed(1)}T`}
                 />
               )}
@@ -203,7 +219,7 @@ export function DebtContent() {
             <CardContent>
               {debtToGdp.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={debtToGdp.data}
                   height={400}
@@ -213,6 +229,12 @@ export function DebtContent() {
                   referenceLines={[
                     { value: 100, label: "100% of GDP", color: "var(--warning)" },
                   ]}
+                />
+              ) : (
+                <DataTable
+                  data={debtToGdp.data}
+                  title="Debt-to-GDP"
+                  formatValue={(v) => `${v.toFixed(0)}%`}
                 />
               )}
             </CardContent>
@@ -249,7 +271,7 @@ export function DebtContent() {
             <CardContent>
               {deficit.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={deficit.data}
                   height={400}
@@ -259,6 +281,12 @@ export function DebtContent() {
                   referenceLines={[
                     { value: 0, label: "Balanced", color: "var(--muted-foreground)" },
                   ]}
+                />
+              ) : (
+                <DataTable
+                  data={deficit.data}
+                  title="Budget Surplus/Deficit"
+                  formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
                 />
               )}
             </CardContent>
@@ -295,12 +323,18 @@ export function DebtContent() {
             <CardContent>
               {interestPayments.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={interestPayments.data}
                   height={400}
                   color="var(--chart-4)"
                   gradientId="interestGradient"
+                  formatValue={(v) => `$${v.toFixed(0)}B`}
+                />
+              ) : (
+                <DataTable
+                  data={interestPayments.data}
+                  title="Interest Payments"
                   formatValue={(v) => `$${v.toFixed(0)}B`}
                 />
               )}

@@ -18,6 +18,9 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, StatCard } from "@/components/charts";
 import { ChartSkeleton } from "@/components/ui/chart-skeleton";
+import { DataTable } from "@/components/ui/data-table";
+import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
+import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { useFredData } from "@/lib/hooks/use-fred-data";
 
 const TIME_RANGES = [
@@ -29,6 +32,8 @@ const TIME_RANGES = [
 
 export function ConsumerContent() {
   const [timeRange, setTimeRange] = useState("10");
+  const [viewMode, setViewMode] = useState<ViewMode>("chart");
+  const [movingAverages, setMovingAverages] = useState<MovingAveragePeriod[]>([]);
 
   const sentiment = useFredData("UMCSENT", { years: parseInt(timeRange) });
   const pce = useFredData("PCE", { years: parseInt(timeRange) });
@@ -41,18 +46,24 @@ export function ConsumerContent() {
       description="Consumer sentiment, spending, and credit metrics"
       icon={ShoppingCart}
       actions={
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TIME_RANGES.map((range) => (
-              <SelectItem key={range.value} value={range.value}>
-                {range.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          {viewMode === "chart" && (
+            <MAToggle value={movingAverages} onChange={setMovingAverages} />
+          )}
+          <ViewToggle value={viewMode} onChange={setViewMode} />
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TIME_RANGES.map((range) => (
+                <SelectItem key={range.value} value={range.value}>
+                  {range.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       }
     >
       {/* Key Stats */}
@@ -146,7 +157,7 @@ export function ConsumerContent() {
             <CardContent>
               {sentiment.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={sentiment.data}
                   height={400}
@@ -156,6 +167,13 @@ export function ConsumerContent() {
                   referenceLines={[
                     { value: 100, label: "Baseline (100)", color: "var(--muted-foreground)" },
                   ]}
+                  movingAverages={movingAverages}
+                />
+              ) : (
+                <DataTable
+                  data={sentiment.data}
+                  title="Consumer Sentiment"
+                  formatValue={(v) => v.toFixed(1)}
                 />
               )}
             </CardContent>
@@ -176,12 +194,18 @@ export function ConsumerContent() {
             <CardContent>
               {pce.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={pce.data}
                   height={400}
                   color="var(--chart-2)"
                   gradientId="pceGradient"
+                  formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
+                />
+              ) : (
+                <DataTable
+                  data={pce.data}
+                  title="Personal Spending"
                   formatValue={(v) => `$${(v / 1000).toFixed(1)}T`}
                 />
               )}
@@ -219,12 +243,18 @@ export function ConsumerContent() {
             <CardContent>
               {savingsRate.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={savingsRate.data}
                   height={400}
                   color="var(--chart-3)"
                   gradientId="savingsRateGradient"
+                  formatValue={(v) => `${v.toFixed(1)}%`}
+                />
+              ) : (
+                <DataTable
+                  data={savingsRate.data}
+                  title="Savings Rate"
                   formatValue={(v) => `${v.toFixed(1)}%`}
                 />
               )}
@@ -246,12 +276,18 @@ export function ConsumerContent() {
             <CardContent>
               {consumerCredit.isLoading ? (
                 <ChartSkeleton height={400} />
-              ) : (
+              ) : viewMode === "chart" ? (
                 <AreaChart
                   data={consumerCredit.data}
                   height={400}
                   color="var(--chart-4)"
                   gradientId="consumerCreditGradient"
+                  formatValue={(v) => `$${(v / 1000).toFixed(2)}T`}
+                />
+              ) : (
+                <DataTable
+                  data={consumerCredit.data}
+                  title="Consumer Credit"
                   formatValue={(v) => `$${(v / 1000).toFixed(2)}T`}
                 />
               )}

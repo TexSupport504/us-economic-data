@@ -122,6 +122,24 @@ export const FRED_SERIES = {
   FYFSD: { id: "FYFSD", name: "Federal Surplus/Deficit", category: "debt" },
   MTSDS133FMS: { id: "MTSDS133FMS", name: "Federal Deficit (Monthly)", category: "debt" },
   FDHBPIN: { id: "FDHBPIN", name: "Federal Debt Interest Payments", category: "debt" },
+
+  // Markets - Stock Indices
+  SP500: { id: "SP500", name: "S&P 500 Index", category: "markets" },
+  NASDAQCOM: { id: "NASDAQCOM", name: "NASDAQ Composite", category: "markets" },
+  DJIA: { id: "DJIA", name: "Dow Jones Industrial Average", category: "markets" },
+  WILLSMLCAP: { id: "WILLSMLCAP", name: "Wilshire Small Cap", category: "markets" },
+
+  // Markets - Volatility & Risk
+  VIXCLS: { id: "VIXCLS", name: "CBOE VIX Volatility Index", category: "markets" },
+  TEDRATE: { id: "TEDRATE", name: "TED Spread", category: "markets" },
+  BAMLH0A0HYM2: { id: "BAMLH0A0HYM2", name: "High Yield Bond Spread", category: "markets" },
+
+  // Commodities
+  DCOILWTICO: { id: "DCOILWTICO", name: "WTI Crude Oil Price", category: "commodities" },
+  DCOILBRENTEU: { id: "DCOILBRENTEU", name: "Brent Crude Oil Price", category: "commodities" },
+  DHHNGSP: { id: "DHHNGSP", name: "Natural Gas Price", category: "commodities" },
+  GOLDAMGBD228NLBM: { id: "GOLDAMGBD228NLBM", name: "Gold Price (London)", category: "commodities" },
+  DEXUSEU: { id: "DEXUSEU", name: "USD/EUR Exchange Rate", category: "commodities" },
 } as const;
 
 export type FredSeriesId = keyof typeof FRED_SERIES;
