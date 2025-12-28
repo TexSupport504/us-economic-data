@@ -66,7 +66,7 @@ function KeyIndicatorCard({
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <Icon className="h-4 w-4 text-primary" />
+                <Icon className="h-4 w-4 text-primary icon-hover-rotate" />
               </div>
               <CardTitle className="text-sm font-medium">{title}</CardTitle>
             </div>
@@ -121,7 +121,7 @@ export function DashboardContent() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="border-b border-border/40 bg-gradient-to-b from-muted/50 to-background">
+      <div className="border-b border-border/40 hero-gradient">
         <div className="container mx-auto max-w-7xl px-4 py-12 md:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -129,7 +129,8 @@ export function DashboardContent() {
             transition={{ duration: 0.5 }}
             className="max-w-3xl"
           >
-            <Badge variant="secondary" className="mb-4">
+            <Badge variant="secondary" className="mb-4 badge-pulse">
+              <span className="mr-1.5 h-2 w-2 rounded-full bg-positive animate-pulse" />
               Live Data
             </Badge>
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">

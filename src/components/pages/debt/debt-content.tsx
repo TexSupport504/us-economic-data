@@ -22,7 +22,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { ViewToggle, type ViewMode } from "@/components/ui/view-toggle";
 import { MAToggle, type MovingAveragePeriod } from "@/components/ui/ma-toggle";
 import { ExportButton } from "@/components/ui/export-button";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PrintButton } from "@/components/ui/print-button";
 import { useFredData } from "@/lib/hooks/use-fred-data";
+import { formatCurrency } from "@/lib/utils";
 
 const TIME_RANGES = [
   { value: "10", label: "10 Years" },
@@ -59,6 +62,8 @@ export function DebtContent() {
             filename={`federal-debt-${timeRange}yr`}
             seriesName="Federal Debt"
           />
+          <PrintButton />
+          <FavoriteButton seriesId="GFDEBTN" />
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />

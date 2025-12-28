@@ -18,6 +18,7 @@ import { format, parseISO } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getVisibleRecessions, clampRecession } from "@/lib/utils/recessions";
+import { getEventsInRange, getEventColor, type EconomicEvent } from "@/lib/utils/economic-events";
 
 interface DataPoint {
   date: string;
@@ -39,6 +40,8 @@ interface AreaChartProps {
   formatDate?: (date: string) => string;
   referenceLines?: { value: number; label?: string; color?: string }[];
   showRecessions?: boolean;
+  showEvents?: boolean;
+  eventTypes?: EconomicEvent["type"][];
   movingAverages?: MovingAveragePeriod[];
   className?: string;
 }
@@ -62,6 +65,8 @@ export function AreaChart({
   formatDate = (d) => format(parseISO(d), "MMM yyyy"),
   referenceLines = [],
   showRecessions = true,
+  showEvents = false,
+  eventTypes = [],
   movingAverages = [],
   className,
 }: AreaChartProps) {
@@ -131,6 +136,36 @@ export function AreaChart({
       };
     });
   }, [data, showRecessions, formatDate]);
+
+  // Get economic events within data range
+  const eventMarkers = useMemo(() => {
+    if (!showEvents || data.length === 0) return [];
+
+    const startDate = data[0].date;
+    const endDate = data[data.length - 1].date;
+    const events = getEventsInRange(startDate, endDate, eventTypes.length > 0 ? eventTypes : undefined);
+
+    return events.map((event) => {
+      // Find the closest data point to the event date
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      for (let i = 0; i < data.length; i++) {
+        const diff = Math.abs(new Date(data[i].date).getTime() - new Date(event.date).getTime());
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = i;
+        }
+      }
+
+      return {
+        x: formatDate(data[closestIndex].date),
+        label: event.label,
+        description: event.description,
+        color: getEventColor(event.type),
+        type: event.type,
+      };
+    });
+  }, [data, showEvents, eventTypes, formatDate]);
 
   if (data.length === 0) {
     return (
@@ -255,6 +290,24 @@ export function AreaChart({
                     }
                   : undefined
               }
+            />
+          ))}
+
+          {/* Economic event markers */}
+          {eventMarkers.map((event, i) => (
+            <ReferenceLine
+              key={`event-${i}`}
+              x={event.x}
+              stroke={event.color}
+              strokeDasharray="3 3"
+              strokeOpacity={0.7}
+              label={{
+                value: event.label,
+                fill: event.color,
+                fontSize: 10,
+                position: "top",
+                offset: 5,
+              }}
             />
           ))}
 

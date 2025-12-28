@@ -1,13 +1,28 @@
+"use client";
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
+  const cardRef = React.useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    cardRef.current.style.setProperty("--mouse-x", `${x}%`);
+    cardRef.current.style.setProperty("--mouse-y", `${y}%`);
+  };
+
   return (
     <div
+      ref={cardRef}
       data-slot="card"
+      onMouseMove={handleMouseMove}
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm card-glow",
         className
       )}
       {...props}

@@ -227,5 +227,212 @@ html {
 }
 
 .stat-card-hover:hover {
-  @apply -translate-y-0.5 shadow-lg;
+  @apply -translate-y-1 shadow-lg;
+}
+
+.dark .stat-card-hover:hover {
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5),
+              0 0 20px -5px rgba(100, 150, 255, 0.1);
+}
+
+/* Button press feedback */
+.btn-press {
+  @apply transition-transform duration-100;
+}
+
+.btn-press:active {
+  @apply scale-[0.98];
+}
+
+/* Card glow effect on hover */
+.card-glow {
+  @apply relative overflow-hidden;
+}
+
+.card-glow::before {
+  content: "";
+  @apply absolute inset-0 opacity-0 transition-opacity duration-500;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(100, 150, 255, 0.06),
+    transparent 40%
+  );
+}
+
+.card-glow:hover::before {
+  @apply opacity-100;
+}
+
+/* Badge pulse animation */
+@keyframes badge-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.badge-pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* Icon hover rotation */
+.icon-hover-rotate {
+  @apply transition-transform duration-300;
+}
+
+.group:hover .icon-hover-rotate {
+  @apply rotate-12;
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Page transition wrapper */
+.page-transition {
+  @apply transition-all duration-300 ease-out;
+}
+
+/* Hero gradient animation */
+@keyframes hero-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.55 0.15 250 / 0.1) 0%,
+    oklch(0.65 0.15 165 / 0.08) 25%,
+    oklch(0.7 0.12 45 / 0.06) 50%,
+    oklch(0.6 0.15 300 / 0.08) 75%,
+    oklch(0.55 0.15 250 / 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: hero-gradient 15s ease infinite;
+}
+
+.dark .hero-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.3 0.1 250 / 0.15) 0%,
+    oklch(0.35 0.1 165 / 0.12) 25%,
+    oklch(0.4 0.08 45 / 0.08) 50%,
+    oklch(0.35 0.1 300 / 0.12) 75%,
+    oklch(0.3 0.1 250 / 0.15) 100%
+  );
+  background-size: 400% 400%;
+  animation: hero-gradient 15s ease infinite;
+}
+
+/* Sparkline container */
+.sparkline-container {
+  @apply relative overflow-hidden rounded;
+}
+
+/* Focus ring for accessibility */
+.focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  @apply absolute left-4 top-4 z-[100] -translate-y-16 rounded-md bg-primary px-4 py-2 text-primary-foreground transition-transform focus:translate-y-0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .stat-card-hover {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}
+
+/* Market ticker animation */
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-scroll {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Number counter animation */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.count-up {
+  animation: count-up 0.5s ease-out forwards;
+}
+
+/* Trillion emphasis styling */
+.trillion-value {
+  @apply text-primary font-black;
+  text-shadow: 0 0 30px rgba(100, 150, 255, 0.3);
+}
+
+.dark .trillion-value {
+  text-shadow: 0 0 40px rgba(100, 180, 255, 0.4);
 }

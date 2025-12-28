@@ -10,6 +10,7 @@ import {
   Ship,
   Banknote,
   LineChart,
+  GitCompare,
   type LucideIcon,
 } from "lucide-react";
 
@@ -125,6 +126,18 @@ export const dataCategories: NavCategory[] = [
         href: "/debt",
         icon: Banknote,
         description: "Federal debt, deficits, and interest",
+      },
+    ],
+  },
+  {
+    title: "Tools",
+    items: [
+      {
+        title: "Correlation",
+        href: "/correlation",
+        icon: GitCompare,
+        description: "Compare indicators and analyze relationships",
+        badge: "New",
       },
     ],
   },
