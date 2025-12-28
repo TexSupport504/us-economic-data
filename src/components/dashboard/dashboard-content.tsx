@@ -44,6 +44,7 @@ function KeyIndicatorCard({
   changeLabel = "YoY",
   description,
   invertColors = false,
+  divisor = 1,
 }: {
   title: string;
   href: string;
@@ -54,10 +55,12 @@ function KeyIndicatorCard({
   changeLabel?: string;
   description: string;
   invertColors?: boolean;
+  divisor?: number;
 }) {
   const { data, latestValue, yoyChange, latestDate, isLoading } = useFredData(seriesId, { years: 2 });
 
   const recentData = data.slice(-60); // Last 60 data points for sparkline
+  const displayValue = latestValue ? latestValue / divisor : undefined;
 
   return (
     <motion.div variants={itemVariants}>
@@ -81,7 +84,7 @@ function KeyIndicatorCard({
                   ) : (
                     <>
                       {prefix}
-                      {latestValue?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {displayValue?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       {suffix}
                     </>
                   )}
@@ -199,9 +202,10 @@ export function DashboardContent() {
             icon={TrendingUp}
             seriesId="GDPC1"
             prefix="$"
-            suffix="B"
+            suffix="T"
             description="Real Gross Domestic Product"
             changeLabel="YoY"
+            divisor={1000}
           />
 
           <KeyIndicatorCard

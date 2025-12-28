@@ -69,11 +69,11 @@ export function GDPContent() {
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         <StatCard
           title="Nominal GDP"
-          value={gdp.latestValue}
+          value={gdp.latestValue ? gdp.latestValue / 1000 : undefined}
           change={gdp.yoyChange}
           changeLabel="YoY change"
           prefix="$"
-          suffix="B"
+          suffix="T"
           icon={TrendingUp}
           description="Total value of goods and services"
           lastUpdated={gdp.latestDate ? format(parseISO(gdp.latestDate), "MMM d, yyyy") : undefined}
@@ -82,11 +82,11 @@ export function GDPContent() {
 
         <StatCard
           title="Real GDP"
-          value={realGdp.latestValue}
+          value={realGdp.latestValue ? realGdp.latestValue / 1000 : undefined}
           change={realGdp.yoyChange}
           changeLabel="YoY change"
           prefix="$"
-          suffix="B"
+          suffix="T"
           icon={TrendingUp}
           description="Inflation-adjusted GDP"
           lastUpdated={realGdp.latestDate ? format(parseISO(realGdp.latestDate), "MMM d, yyyy") : undefined}
@@ -136,7 +136,7 @@ export function GDPContent() {
                       </Tooltip>
                     </TooltipProvider>
                   </CardTitle>
-                  <CardDescription>Billions of Chained 2017 Dollars, Seasonally Adjusted</CardDescription>
+                  <CardDescription>Trillions of Chained 2017 Dollars, Seasonally Adjusted</CardDescription>
                 </div>
                 <Badge variant="secondary">GDPC1</Badge>
               </div>
@@ -170,7 +170,7 @@ export function GDPContent() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Nominal GDP</CardTitle>
-                  <CardDescription>Billions of Dollars, Seasonally Adjusted Annual Rate</CardDescription>
+                  <CardDescription>Trillions of Dollars, Seasonally Adjusted Annual Rate</CardDescription>
                 </div>
                 <Badge variant="secondary">GDP</Badge>
               </div>
