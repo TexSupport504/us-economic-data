@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# US Economic Data Dashboard
+
+A premium, modern web application for visualizing US economic data in real-time. Built with Next.js, TypeScript, and powered by the Federal Reserve Economic Data (FRED) API.
+
+## Features
+
+- **Real-time Economic Data**: Live data from the Federal Reserve (FRED API)
+- **Multiple Data Categories**:
+  - **GDP**: Real GDP, nominal GDP, growth rates
+  - **Inflation**: CPI, Core CPI, PCE, Core PCE with component breakdowns
+  - **Employment**: Unemployment rate, payrolls, labor force participation, sector breakdowns
+  - **Interest Rates**: Treasury yields, Fed Funds Rate, yield curves
+  - **Housing**: Home prices, housing starts, mortgage rates
+  - **Consumer**: Retail sales, consumer sentiment, spending
+  - **Monetary Policy**: Money supply, Fed balance sheet, bank reserves
+- **Interactive Charts**: Area charts, line charts with multiple series
+- **Date Range Comparison**: Compare current values to 1, 2, 3, 5, or 10 years ago
+- **Data Export**: Download data as CSV or JSON
+- **Global Search**: Quick search with Cmd+K / Ctrl+K
+- **Dark/Light Mode**: Automatic and manual theme switching
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Premium UI**: Smooth animations, modern styling
+
+## Tech Stack
+
+- **Framework**: Next.js 16 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Charts**: Recharts
+- **Animations**: Framer Motion
+- **Data Fetching**: SWR with automatic caching
+- **State Management**: Zustand
+- **API**: FRED (Federal Reserve Economic Data)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
+- FRED API key (free from https://fred.stlouisfed.org/docs/api/api_key.html)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/YOUR_USERNAME/us-economic-data.git
+cd us-economic-data
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create a `.env.local` file with your FRED API key:
+```env
+FRED_API_KEY=your_api_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── api/fred/          # API routes for FRED data
+│   ├── (pages)/           # Page routes
+│   └── layout.tsx         # Root layout
+├── components/
+│   ├── charts/            # Chart components (AreaChart, LineChart, StatCard)
+│   ├── layout/            # Layout components (Header, Footer, PageLayout)
+│   ├── pages/             # Page-specific content components
+│   ├── providers/         # Context providers
+│   └── ui/                # UI components (shadcn/ui + custom)
+├── config/
+│   └── navigation.ts      # Navigation configuration
+└── lib/
+    ├── api/               # FRED API client
+    ├── hooks/             # Custom React hooks
+    └── utils/             # Utility functions
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is configured for Vercel deployment. Simply connect your GitHub repository to Vercel and add your `FRED_API_KEY` environment variable.
+
+## Data Sources
+
+- [Federal Reserve Economic Data (FRED)](https://fred.stlouisfed.org/) - Primary data source
+
+## License
+
+MIT
