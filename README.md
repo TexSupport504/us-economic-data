@@ -32,30 +32,46 @@ A premium, modern web application for visualizing US economic data in real-time.
 - **State Management**: Zustand
 - **API**: FRED (Federal Reserve Economic Data)
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
+### One-Command Setup
 
-- Node.js 18+
-- npm or yarn
-- FRED API key (free from https://fred.stlouisfed.org/docs/api/api_key.html)
-
-### Installation
-
-1. Clone the repository:
+**Windows:**
 ```bash
-git clone https://github.com/YOUR_USERNAME/us-economic-data.git
+git clone https://github.com/TexSupport504/us-economic-data.git
 cd us-economic-data
+setup.bat
 ```
 
-2. Install dependencies:
+**Mac/Linux:**
 ```bash
+git clone https://github.com/TexSupport504/us-economic-data.git
+cd us-economic-data
+chmod +x setup.sh && ./setup.sh
+```
+
+The setup script will:
+1. Install all dependencies
+2. Create `.env.local` from the template
+3. Tell you where to get your free FRED API key
+
+### Manual Setup
+
+If you prefer manual setup:
+
+1. Clone and install:
+```bash
+git clone https://github.com/TexSupport504/us-economic-data.git
+cd us-economic-data
 npm install
 ```
 
-3. Create a `.env.local` file with your FRED API key:
-```env
-FRED_API_KEY=your_api_key_here
+2. Get a FREE FRED API key from: https://fred.stlouisfed.org/docs/api/api_key.html
+
+3. Copy `.env.example` to `.env.local` and add your API key:
+```bash
+cp .env.example .env.local
+# Edit .env.local with your API key
 ```
 
 4. Start the development server:
