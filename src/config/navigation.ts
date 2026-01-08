@@ -11,6 +11,7 @@ import {
   Money,
   ChartLine,
   GitDiff,
+  ShieldCheck,
   type Icon as PhosphorIcon,
 } from "@phosphor-icons/react";
 
@@ -126,6 +127,18 @@ export const dataCategories: NavCategory[] = [
         href: "/debt",
         icon: Money,
         description: "Federal debt, deficits, and interest",
+      },
+    ],
+  },
+  {
+    title: "Enforcement",
+    items: [
+      {
+        title: "Federal Arrests",
+        href: "/federal-arrests",
+        icon: ShieldCheck,
+        description: "ICE, CBP, FBI, DEA, US Marshals data since 2025",
+        badge: "New",
       },
     ],
   },
